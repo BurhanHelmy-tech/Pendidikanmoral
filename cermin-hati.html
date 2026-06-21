@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cermin Hati — Misi Sensitiviti Diri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#241a47; --indigo2:#33256e; --panel:#3a2a7a;
+    --lavender:#9b7bf0; --lilac:#c9b6ff; --gold:#ffd36b; --glow:#ffe9a8;
+    --pink:#ff8fb0; --mint:#6fe7c8; --cream:#fff7ec; --ink:#2a2150;
+    --muted:#bdb0e6;
+    --ok:#5fd6a8; --no:#ff9bb3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;
+    color:var(--cream);
+    background:
+      radial-gradient(1200px 700px at 50% -10%, #4b3a9e 0%, transparent 60%),
+      radial-gradient(900px 600px at 90% 110%, #6a4fb8 0%, transparent 55%),
+      linear-gradient(160deg,#241a47 0%,#1a1338 100%);
+    background-attachment:fixed;
+    min-height:100%;
+    display:flex; justify-content:center;
+    padding:16px;
+    overflow-x:hidden;
+  }
+  /* drifting stars */
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+  .stars i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.5;
+    animation:twinkle 3s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:.9;transform:scale(1.2)}}
+
+  .app{width:100%;max-width:560px;position:relative;z-index:1}
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .brand{font-family:'Fredoka';font-weight:700;font-size:1.05rem;letter-spacing:.3px;
+    display:flex;align-items:center;gap:8px}
+  .brand .dot{width:26px;height:26px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#fff,var(--gold) 55%,#e89a2b);
+    box-shadow:0 0 14px var(--gold)}
+  .spacer{flex:1}
+  .iconbtn{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.18);
+    color:var(--cream);width:40px;height:40px;border-radius:12px;font-size:1.1rem;cursor:pointer;
+    display:grid;place-items:center;transition:.2s}
+  .iconbtn:hover{background:rgba(255,255,255,.2)}
+  .iconbtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+  /* card / screens */
+  .screen{display:none;animation:rise .5s cubic-bezier(.2,.8,.2,1)}
+  .screen.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+    border:1.5px solid rgba(255,255,255,.14);border-radius:26px;padding:22px;
+    box-shadow:0 20px 50px rgba(0,0,0,.35);backdrop-filter:blur(4px)}
+
+  h1{font-family:'Fredoka';font-weight:700;font-size:2rem;line-height:1.1;text-align:center;
+    text-shadow:0 2px 18px rgba(255,211,107,.35)}
+  h2{font-family:'Fredoka';font-weight:600;font-size:1.4rem;margin-bottom:6px}
+  .sub{color:var(--lilac);text-align:center;font-weight:600;margin-top:6px}
+  p{line-height:1.55}
+
+  /* MIRROR */
+  .mirror-wrap{display:flex;justify-content:center;margin:18px 0 8px}
+  .mirror{
+    width:200px;height:248px;border-radius:50% 50% 48% 48%/55% 55% 45% 45%;
+    position:relative;
+    background:radial-gradient(120px 150px at 50% 42%,#2a1f55,#140e2e 80%);
+    border:10px solid transparent;
+    background-clip:padding-box;
+    box-shadow:0 0 0 6px #1c1440, 0 18px 40px rgba(0,0,0,.45);
+  }
+  .mirror::before{ /* gold ornate frame */
+    content:"";position:absolute;inset:-16px;border-radius:inherit;z-index:-1;
+    background:conic-gradient(from 0deg,#ffe9a8,#e89a2b,#ffd36b,#b9772a,#ffe9a8);
+    filter:blur(.3px);
+  }
+  .mirror .shine{position:absolute;top:10%;left:18%;width:40%;height:30%;
+    background:radial-gradient(closest-side,rgba(255,255,255,.45),transparent);
+    border-radius:50%;transform:rotate(-20deg);pointer-events:none}
+  /* Si Hati */
+  .hati{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:96px;height:96px;transition:filter .5s,transform .5s}
+  .hati .glow{position:absolute;inset:-40px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(255,211,107,.8),transparent);
+    animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(.92);opacity:.7}50%{transform:scale(1.08);opacity:1}}
+  .heart{position:absolute;inset:0;filter:drop-shadow(0 6px 14px rgba(255,143,176,.5))}
+  .face{position:absolute;inset:0;display:grid;place-items:center}
+  .eyes{display:flex;gap:16px;margin-top:6px}
+  .eye{width:10px;height:14px;background:#3a1d4e;border-radius:50%;
+    animation:blink 4.5s infinite}
+  @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+  .mouth{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+    width:20px;height:11px;border-bottom:4px solid #3a1d4e;border-radius:0 0 14px 14px}
+  /* moods */
+  .hati.sad{filter:saturate(.5) brightness(.8);transform:translate(-50%,-46%) scale(.92)}
+  .hati.sad .glow{background:radial-gradient(closest-side,rgba(155,123,240,.5),transparent)}
+  .hati.sad .mouth{border-bottom:none;border-top:4px solid #3a1d4e;border-radius:14px 14px 0 0;bottom:24px}
+  .hati.happy{transform:translate(-50%,-54%) scale(1.05)}
+  .hati.happy .glow{animation-duration:1.2s}
+
+  .speech{margin-top:14px;background:var(--cream);color:var(--ink);border-radius:18px;
+    padding:14px 16px;font-weight:700;text-align:center;position:relative}
+  .speech::after{content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+    border:10px solid transparent;border-bottom-color:var(--cream);border-top:none}
+
+  /* buttons */
+  .btn{display:block;width:100%;border:none;cursor:pointer;font-family:'Fredoka';font-weight:600;
+    font-size:1.1rem;padding:16px 18px;border-radius:18px;color:#3a1d4e;
+    background:linear-gradient(180deg,var(--gold),#f0b53e);
+    box-shadow:0 8px 0 #c98a26,0 12px 24px rgba(0,0,0,.3);
+    transition:transform .12s, box-shadow .12s;margin-top:14px}
+  .btn:active{transform:translateY(5px);box-shadow:0 3px 0 #c98a26}
+  .btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .btn.ghost{background:rgba(255,255,255,.12);color:var(--cream);
+    box-shadow:0 6px 0 rgba(0,0,0,.25)}
+  .btn.ghost:active{box-shadow:0 2px 0 rgba(0,0,0,.25)}
+
+  /* choices */
+  .choice{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;cursor:pointer;
+    background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.16);color:var(--cream);
+    border-radius:18px;padding:16px;margin-top:12px;font-size:1.02rem;font-weight:700;
+    transition:.18s;font-family:'Nunito'}
+  .choice:hover{background:rgba(255,255,255,.14);transform:translateX(3px)}
+  .choice:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .choice .pick{flex:0 0 32px;height:32px;border-radius:50%;background:rgba(255,255,255,.15);
+    display:grid;place-items:center;font-size:1.1rem}
+  .choice.correct{background:rgba(95,214,168,.22);border-color:var(--ok)}
+  .choice.wrong{background:rgba(255,155,179,.18);border-color:var(--no)}
+  .choice:disabled{cursor:default}
+
+  /* meter + dots */
+  .meterbox{margin:6px 0 2px;display:flex;align-items:center;gap:10px;font-weight:800}
+  .meter{flex:1;height:16px;border-radius:20px;background:rgba(0,0,0,.3);overflow:hidden;
+    border:1.5px solid rgba(255,255,255,.15)}
+  .meter > i{display:block;height:100%;width:0;border-radius:20px;
+    background:linear-gradient(90deg,var(--pink),var(--gold),var(--mint));
+    transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .dots{display:flex;gap:8px;justify-content:center;margin:14px 0 4px}
+  .dots i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.22)}
+  .dots i.on{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+  .dots i.now{transform:scale(1.5);background:var(--lilac)}
+
+  .tag{display:inline-block;background:rgba(255,211,107,.18);color:var(--gold);
+    border:1.5px solid rgba(255,211,107,.4);padding:4px 12px;border-radius:30px;
+    font-weight:800;font-size:.85rem;margin-bottom:10px}
+  .scene{font-size:1.12rem;font-weight:700;line-height:1.5;margin:8px 0 4px}
+  .ask{color:var(--lilac);font-weight:800;margin-top:10px}
+
+  /* checklist */
+  .check{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.07);
+    border:2px solid rgba(255,255,255,.14);border-radius:16px;padding:14px;margin-top:10px;
+    cursor:pointer;font-weight:700;transition:.18s}
+  .check:hover{background:rgba(255,255,255,.12)}
+  .check .box{flex:0 0 30px;height:30px;border-radius:9px;border:2px solid var(--lilac);
+    display:grid;place-items:center;font-size:1.1rem;color:#241a47;background:transparent;transition:.18s}
+  .check.on{background:rgba(95,214,168,.16);border-color:var(--mint)}
+  .check.on .box{background:var(--mint);border-color:var(--mint)}
+
+  input.name{width:100%;padding:14px 16px;border-radius:14px;border:2px solid var(--lilac);
+    background:rgba(255,255,255,.95);color:var(--ink);font-family:'Nunito';font-weight:800;
+    font-size:1.05rem;margin-top:6px;text-align:center}
+  input.name:focus{outline:3px solid var(--gold)}
+
+  /* certificate */
+  .cert{background:linear-gradient(180deg,#fff8ec,#ffeccf);color:var(--ink);border-radius:22px;
+    padding:24px 20px;text-align:center;border:4px solid var(--gold);position:relative;margin-top:6px;
+    box-shadow:0 14px 30px rgba(0,0,0,.3)}
+  .cert .seal{width:74px;height:74px;border-radius:50%;margin:0 auto 8px;
+    background:radial-gradient(circle at 35% 30%,#fff,var(--gold) 60%,#d98f24);
+    display:grid;place-items:center;font-size:2rem;box-shadow:0 0 0 5px rgba(255,211,107,.4)}
+  .cert h3{font-family:'Fredoka';font-size:1.5rem;color:#7a4f12}
+  .cert .nm{font-family:'Fredoka';font-weight:700;font-size:1.6rem;color:var(--ink);
+    margin:6px 0;border-bottom:2px dashed #d3a85a;display:inline-block;padding:0 10px 4px}
+  .cert .ikrar{text-align:left;font-weight:700;line-height:1.6;margin-top:10px}
+  .cert .ikrar b{color:#7a4f12}
+  .score-big{font-family:'Fredoka';font-size:2.4rem;color:var(--gold);text-shadow:0 0 16px var(--gold)}
+
+  .center{text-align:center}
+  .small{font-size:.92rem;color:var(--muted)}
+  .mt{margin-top:14px}
+
+  /* sparkles */
+  .spark{position:fixed;pointer-events:none;font-size:1.3rem;z-index:50;
+    animation:fly 1.1s ease-out forwards}
+  @keyframes fly{0%{opacity:1;transform:translate(0,0) scale(.6)}
+    100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)}}
+
+  /* teacher modal */
+  .modal{position:fixed;inset:0;background:rgba(10,7,25,.7);display:none;z-index:80;
+    padding:16px;overflow:auto;backdrop-filter:blur(3px)}
+  .modal.open{display:flex;justify-content:center;align-items:flex-start}
+  .sheet{background:#fff7ec;color:var(--ink);max-width:560px;width:100%;border-radius:22px;
+    padding:22px;margin-top:30px;animation:rise .35s}
+  .sheet h2{font-family:'Fredoka';color:#5b3aa3;margin-bottom:4px}
+  .sheet h4{font-family:'Fredoka';margin:14px 0 4px;color:#7a4f12}
+  .sheet ul{margin:6px 0 6px 18px;line-height:1.55}
+  .sheet .x{float:right;border:none;background:#5b3aa3;color:#fff;border-radius:10px;
+    width:36px;height:36px;font-size:1.1rem;cursor:pointer}
+  .pill{display:inline-block;background:#efe5ff;color:#5b3aa3;border-radius:20px;
+    padding:3px 10px;margin:3px 4px 0 0;font-weight:800;font-size:.85rem}
+
+  @media (max-width:380px){ h1{font-size:1.7rem} .mirror{width:172px;height:214px} }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars" aria-hidden="true"></div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span> Cermin Hati</div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="soundBtn" aria-label="Bunyi" title="Bunyi">🔊</button>
+    <button class="iconbtn" id="teacherBtn" aria-label="Untuk Cikgu" title="Untuk Cikgu">👩‍🏫</button>
+  </div>
+
+  <!-- 1. START -->
+  <section class="screen active" id="s-mula" aria-label="Mula">
+    <div class="card center">
+      <h1>Cermin Hati ✨</h1>
+      <p class="sub">Misi Sensitiviti Terhadap Diri</p>
+      <div class="mirror-wrap">
+        <div class="mirror"><span class="shine"></span>
+          <div class="hati happy" id="hatiStart">
+            <div class="glow"></div>
+            <svg class="heart" viewBox="0 0 100 100"><path d="M50 86C18 64 8 44 8 30 8 16 19 8 31 8c8 0 15 4 19 12 4-8 11-12 19-12 12 0 23 8 23 22 0 14-10 34-40 56z" fill="#ff8fb0"/></svg>
+            <div class="face"><div><div class="eyes"><span class="eye"></span><span class="eye"></span></div></div></div>
+            <div class="mouth"></div>
+          </div>
+        </div>
+      </div>
+      <p style="font-weight:700">Hai! Saya <b>Si Hati</b>. Saya tinggal di dalam cermin ajaib.</p>
+      <p class="mt">Cermin ini boleh <b>nampak hati kamu</b>! Mari uji sama ada pilihan kamu setiap hari <b>peka dan menyayangi diri sendiri</b>.</p>
+      <button class="btn" id="goLearn">Mula Misi 🚀</button>
+    </div>
+  </section>
+
+  <!-- 2. LEARN -->
+  <section class="screen" id="s-belajar" aria-label="Belajar">
+    <div class="card">
+      <h2 class="center">Apa itu sensitiviti<br>terhadap diri?</h2>
+      <p class="mt center" style="font-weight:700">Ia bermaksud kita <b>peka</b> dan <b>sedar</b> tentang apa yang baik dan tidak baik untuk diri kita sendiri.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" class="mt">
+        <div class="card" style="padding:14px;text-align:center"><div style="font-size:1.8rem">🧼</div><b>Jaga kebersihan</b></div>
+        <div class="card" style="padding:14px;text-align:center"><div style="font-size:1.8rem">⏰</div><b>Disiplin diri</b></div>
+        <div class="card" style="padding:14px;text-align:center"><div style="font-size:1.8rem">💛</div><b>Jujur & maruah</b></div>
+        <div class="card" style="padding:14px;text-align:center"><div style="font-size:1.8rem">😌</div><b>Kawal emosi</b></div>
+      </div>
+      <p class="mt center small">Sebelum buat sesuatu, berhenti dan tanya: <b style="color:var(--gold)">"Adakah ini baik untuk diri saya?"</b></p>
+      <p class="mt center" style="font-weight:700">Bila pilihan kamu peka pada diri, cahaya <b>Si Hati</b> akan makin terang! 🌟</p>
+      <button class="btn" id="goMisi">Saya Faham, Teruskan!</button>
+    </div>
+  </section>
+
+  <!-- 3. MISSIONS -->
+  <section class="screen" id="s-misi" aria-label="Misi">
+    <div class="card">
+      <div class="meterbox"><span>💡</span>
+        <div class="meter"><i id="meterFill"></i></div>
+        <span id="meterPct">0</span>
+      </div>
+      <div class="dots" id="dots"></div>
+
+      <div class="mirror-wrap" style="margin:8px 0">
+        <div class="mirror"><span class="shine"></span>
+          <div class="hati" id="hati">
+            <div class="glow"></div>
+            <svg class="heart" viewBox="0 0 100 100"><path d="M50 86C18 64 8 44 8 30 8 16 19 8 31 8c8 0 15 4 19 12 4-8 11-12 19-12 12 0 23 8 23 22 0 14-10 34-40 56z" fill="#ff8fb0"/></svg>
+            <div class="face"><div><div class="eyes"><span class="eye"></span><span class="eye"></span></div></div></div>
+            <div class="mouth"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sceneBox">
+        <span class="tag" id="mTag">Nilai</span>
+        <p class="scene" id="mScene"></p>
+        <p class="ask" id="mAsk">Apa pilihan yang sensitif terhadap diri?</p>
+        <div id="choices"></div>
+      </div>
+
+      <div id="feedbackBox" style="display:none">
+        <div class="speech" id="mFeedback"></div>
+        <button class="btn" id="nextBtn">Seterusnya ➡️</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. REFLECTION -->
+  <section class="screen" id="s-refleksi" aria-label="Refleksi">
+    <div class="card">
+      <h2 class="center">Cermin Refleksi 🪞</h2>
+      <p class="center mt" style="font-weight:700">Hari ini, yang mana satu kamu sudah buat untuk menyayangi diri? Tanda yang betul.</p>
+      <div id="reflectList"></div>
+      <button class="btn" id="goIkrar">Sambung ke Ikrar Diri ✍️</button>
+    </div>
+  </section>
+
+  <!-- 5. PLEDGE / CERTIFICATE -->
+  <section class="screen" id="s-ikrar" aria-label="Ikrar">
+    <div class="card">
+      <h2 class="center">Ikrar Diri 🌟</h2>
+      <p class="center mt" style="font-weight:700">Tulis nama kamu dan pilih janji untuk diri sendiri.</p>
+      <input class="name" id="nameInput" maxlength="22" placeholder="Tulis nama kamu di sini" aria-label="Nama">
+      <div id="pledgeList"></div>
+      <button class="btn" id="makeCert">Hasilkan Sijil Saya 🎉</button>
+
+      <div id="certBox" style="display:none">
+        <div class="cert mt" id="cert">
+          <div class="seal">🏅</div>
+          <h3>Sijil Detektif Diri</h3>
+          <p style="font-weight:700">Dengan bangganya dianugerahkan kepada</p>
+          <div class="nm" id="certName">Murid Hebat</div>
+          <p class="mt" style="font-weight:800">Cahaya Hati kamu: <span class="score-big" id="certScore">0%</span></p>
+          <div class="ikrar" id="certIkrar"></div>
+          <p class="mt small" style="color:#7a4f12;font-weight:800">"Saya peka, saya menyayangi diri saya." 💛</p>
+        </div>
+        <button class="btn ghost" id="restartBtn">Main Semula 🔁</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- TEACHER MODAL -->
+<div class="modal" id="teacherModal" role="dialog" aria-modal="true" aria-label="Maklumat untuk cikgu">
+  <div class="sheet">
+    <button class="x" id="closeTeacher" aria-label="Tutup">✕</button>
+    <h2>👩‍🏫 Untuk Cikgu</h2>
+    <p style="font-weight:800;color:#5b3aa3">Inovasi Pengajaran — Pendidikan Moral Tahun 4 (KSSR)</p>
+
+    <h4>Fokus</h4>
+    <p>Mengatasi <b>kurangnya sensitiviti moral terhadap diri murid</b> melalui pembelajaran interaktif bertemakan "cermin ajaib" yang memantulkan kesan pilihan harian terhadap diri sendiri.</p>
+
+    <h4>Objektif Pembelajaran</h4>
+    <ul>
+      <li>Murid menyatakan maksud <i>sensitiviti terhadap diri</i> dengan bahasa sendiri.</li>
+      <li>Murid mengenal pasti pilihan yang menjaga diri dalam situasi harian.</li>
+      <li>Murid membuat ikrar amalan untuk menyayangi diri sendiri.</li>
+    </ul>
+
+    <h4>Nilai Teras Diterapkan</h4>
+    <div>
+      <span class="pill">Disiplin diri</span><span class="pill">Kebersihan</span>
+      <span class="pill">Kejujuran & maruah</span><span class="pill">Kawalan emosi</span>
+      <span class="pill">Kesihatan & kesederhanaan</span>
+    </div>
+
+    <h4>Cadangan Penggunaan (±25 min)</h4>
+    <ul>
+      <li><b>Set induksi:</b> tayang skrin "Cermin Hati" — tanya murid maksud "peka pada diri".</li>
+      <li><b>Aktiviti:</b> murid main secara individu (tablet) atau paparan kelas + undi pilihan.</li>
+      <li><b>Perbincangan:</b> selepas setiap situasi, bincang "kenapa pilihan ini menjaga diri?".</li>
+      <li><b>Penutup:</b> murid lengkapkan Cermin Refleksi & Ikrar Diri, cetak/kongsi sijil.</li>
+    </ul>
+
+    <h4>Pentaksiran Ringkas</h4>
+    <ul>
+      <li>Skor "Cahaya Hati" sebagai semakan kefahaman segera.</li>
+      <li>Ikrar diri sebagai bukti pengukuhan amalan (boleh ditampal di kelas).</li>
+    </ul>
+    <p class="small" style="margin-top:10px">Nota: Selaraskan standard pembelajaran dengan DSKP Pendidikan Moral Tahun 4 terkini di sekolah anda.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  /* ---------- data ---------- */
+  var scenarios = [
+    { nilai:"Disiplin Diri",
+      scene:"Pukul 6:30 pagi, loceng jam berbunyi. Aiman rasa mengantuk dan sejuk. Sekolah bermula pukul 7:30.",
+      options:[
+        {t:"Bangun, kemas katil dan bersiap ke sekolah", ok:true,
+         f:"Hebat! Bangun awal menunjukkan kamu peka pada disiplin diri. Diri kamu akan segar dan tidak tergesa-gesa. 🌅"},
+        {t:"Tidur semula sampai lewat ke sekolah", ok:false,
+         f:"Cuba fikir semula. Tidur lewat buat kamu tergesa-gesa dan tertekan. Peka pada diri ialah berdisiplin walau susah. 💛"}
+      ]},
+    { nilai:"Kebersihan & Kesihatan Diri",
+      scene:"Selepas main bola di padang, badan Aiman berpeluh, kotor dan berbau. Dia rasa sangat penat.",
+      options:[
+        {t:"Mandi dan tukar baju bersih dahulu", ok:true,
+         f:"Bagus! Menjaga kebersihan badan ialah cara menyayangi diri. Diri yang bersih, hati pun ceria. 🧼"},
+        {t:"Terus baring di katil dengan baju kotor", ok:false,
+         f:"Hmm... badan kotor boleh buat kulit gatal dan jatuh sakit. Peka pada diri ialah menjaga kebersihan & kesihatan. 💛"}
+      ]},
+    { nilai:"Kejujuran & Maruah Diri",
+      scene:"Semasa ujian, Mira tidak tahu satu jawapan. Dia nampak buku kawan terbuka di sebelahnya.",
+      options:[
+        {t:"Cuba jawab sendiri dengan jujur", ok:true,
+         f:"Syabas! Jujur menjaga maruah diri kamu. Walau salah, kamu belajar dan rasa bangga dengan diri sendiri. 💪"},
+        {t:"Meniru jawapan kawan diam-diam", ok:false,
+         f:"Fikir semula ya. Meniru menjatuhkan maruah dan kamu tak belajar apa-apa. Peka pada diri ialah jujur. 💛"}
+      ]},
+    { nilai:"Mengawal Emosi",
+      scene:"Aiman kalah dalam permainan. Dia rasa sangat marah dan malu. Tangannya mahu membaling alat permainan.",
+      options:[
+        {t:"Tarik nafas dalam-dalam & ucap tahniah pada kawan", ok:true,
+         f:"Mantap! Mengawal emosi menunjukkan kamu hormat pada diri sendiri. Kamu jadi lebih tenang & gembira. 😌"},
+        {t:"Baling alat dan merajuk kuat-kuat", ok:false,
+         f:"Sabar dulu. Marah tak terkawal boleh sakitkan diri & orang lain. Peka pada diri ialah menenangkan emosi. 💛"}
+      ]},
+    { nilai:"Kesihatan & Kesederhanaan",
+      scene:"Petang ini lapang. Selepas siapkan kerja sekolah, Mira boleh pilih apa nak buat.",
+      options:[
+        {t:"Seimbang: rehat mata, main di luar & baca buku", ok:true,
+         f:"Pilihan bijak! Menjaga kesihatan & masa dengan seimbang ialah cara menyayangi diri. 🌳"},
+        {t:"Main gajet 5 jam tanpa henti sampai mata pedih", ok:false,
+         f:"Cuba seimbangkan ya. Terlalu lama dengan gajet sakitkan mata & badan. Peka pada diri ialah kesederhanaan. 💛"}
+      ]}
+  ];
+
+  var reflectItems = [
+    "Saya bangun & bersiap tanpa banyak alasan",
+    "Saya menjaga kebersihan badan saya",
+    "Saya berkata benar dan jujur",
+    "Saya cuba menenangkan emosi saya",
+    "Saya menjaga kesihatan & masa saya"
+  ];
+  var pledgeItems = [
+    "menjaga kebersihan diri",
+    "berdisiplin & bangun awal",
+    "sentiasa bersikap jujur",
+    "mengawal emosi saya",
+    "menjaga kesihatan & masa"
+  ];
+
+  /* ---------- state ---------- */
+  var idx=0, correctCount=0, soundOn=true;
+
+  /* ---------- helpers ---------- */
+  var $=function(s){return document.querySelector(s)};
+  function show(id){
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+    $('#'+id).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  /* tiny WebAudio beeps */
+  var AC=null;
+  function tone(freqs,dur){
+    if(!soundOn) return;
+    try{
+      AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+      freqs.forEach(function(fr,i){
+        var o=AC.createOscillator(), g=AC.createGain();
+        o.type='sine'; o.frequency.value=fr;
+        o.connect(g); g.connect(AC.destination);
+        var t=AC.currentTime+i*0.09;
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(0.22,t+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+(dur||0.25));
+        o.start(t); o.stop(t+(dur||0.25)+0.02);
+      });
+    }catch(e){}
+  }
+  var goodSound=function(){tone([523,659,784],0.22)};
+  var softSound=function(){tone([392,330],0.3)};
+
+  function sparkleBurst(x,y){
+    var marks=['✨','⭐','💛','🌟'];
+    for(var i=0;i<10;i++){
+      var s=document.createElement('div');
+      s.className='spark'; s.textContent=marks[i%marks.length];
+      s.style.left=x+'px'; s.style.top=y+'px';
+      var ang=Math.random()*Math.PI*2, dist=60+Math.random()*70;
+      s.style.setProperty('--dx',(Math.cos(ang)*dist)+'px');
+      s.style.setProperty('--dy',(Math.sin(ang)*dist-30)+'px');
+      document.body.appendChild(s);
+      setTimeout(function(el){return function(){el.remove()}}(s),1100);
+    }
+  }
+
+  /* ---------- stars bg ---------- */
+  (function(){
+    var box=$('#stars'),html='';
+    for(var i=0;i<34;i++){
+      html+='<i style="left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+(Math.random()*3)+'s"></i>';
+    }
+    box.innerHTML=html;
+  })();
+
+  /* ---------- dots ---------- */
+  function buildDots(){
+    var d=$('#dots'),h='';
+    for(var i=0;i<scenarios.length;i++) h+='<i></i>';
+    d.innerHTML=h;
+  }
+  function paintDots(){
+    var ds=$('#dots').children;
+    for(var i=0;i<ds.length;i++){
+      ds[i].className = i<idx?'on':(i===idx?'now':'');
+    }
+  }
+
+  /* ---------- meter + mood ---------- */
+  function updateMeter(){
+    var pct=Math.round((correctCount/scenarios.length)*100);
+    $('#meterFill').style.width=pct+'%';
+    $('#meterPct').textContent=pct;
+  }
+  function setMood(m){
+    var h=$('#hati');
+    h.classList.remove('happy','sad');
+    if(m) h.classList.add(m);
+  }
+
+  /* ---------- render scenario ---------- */
+  function renderScenario(){
+    paintDots();
+    setMood('');
+    var sc=scenarios[idx];
+    $('#mTag').textContent='💛 '+sc.nilai;
+    $('#mScene').textContent=sc.scene;
+    $('#sceneBox').style.display='block';
+    $('#feedbackBox').style.display='none';
+
+    // shuffle options
+    var opts=sc.options.slice();
+    if(Math.random()<0.5) opts.reverse();
+
+    var wrap=$('#choices'); wrap.innerHTML='';
+    opts.forEach(function(op){
+      var b=document.createElement('button');
+      b.className='choice';
+      b.innerHTML='<span class="pick">'+(op.ok?'A':'B')+'</span><span>'+op.t+'</span>';
+      // hide which is which: relabel after shuffle
+      b.querySelector('.pick').textContent = (wrap.children.length===0?'A':'B');
+      b.addEventListener('click',function(ev){ pickChoice(op,b,ev); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function pickChoice(op,btn,ev){
+    var all=$('#choices').querySelectorAll('.choice');
+    all.forEach(function(b){b.disabled=true});
+    if(op.ok){
+      btn.classList.add('correct');
+      correctCount++;
+      setMood('happy'); goodSound();
+      var r=btn.getBoundingClientRect();
+      sparkleBurst(r.left+r.width/2, r.top+20);
+    }else{
+      btn.classList.add('wrong');
+      setMood('sad'); softSound();
+    }
+    updateMeter();
+    $('#mFeedback').textContent=op.f;
+    $('#sceneBox').style.display='none';
+    $('#feedbackBox').style.display='block';
+    $('#nextBtn').textContent = (idx===scenarios.length-1)?'Tamat Misi 🏁':'Seterusnya ➡️';
+  }
+
+  $('#nextBtn').addEventListener('click',function(){
+    if(idx<scenarios.length-1){ idx++; renderScenario(); }
+    else { buildReflect(); show('s-refleksi'); }
+  });
+
+  /* ---------- reflection ---------- */
+  function buildReflect(){
+    var box=$('#reflectList'); box.innerHTML='';
+    reflectItems.forEach(function(t){
+      var d=document.createElement('div');
+      d.className='check';
+      d.innerHTML='<span class="box">✓</span><span>'+t+'</span>';
+      d.addEventListener('click',function(){ d.classList.toggle('on'); if(d.classList.contains('on')) goodSound(); });
+      box.appendChild(d);
+    });
+  }
+
+  /* ---------- pledge ---------- */
+  function buildPledge(){
+    var box=$('#pledgeList'); box.innerHTML='';
+    pledgeItems.forEach(function(t){
+      var d=document.createElement('div');
+      d.className='check on';
+      d.innerHTML='<span class="box">✓</span><span>'+t.charAt(0).toUpperCase()+t.slice(1)+'</span>';
+      d.dataset.t=t;
+      d.addEventListener('click',function(){ d.classList.toggle('on'); });
+      box.appendChild(d);
+    });
+  }
+
+  $('#goIkrar').addEventListener('click',function(){ buildPledge(); show('s-ikrar'); });
+
+  $('#makeCert').addEventListener('click',function(){
+    var nm=$('#nameInput').value.trim()||'Murid Hebat';
+    $('#certName').textContent=nm;
+    var pct=Math.round((correctCount/scenarios.length)*100);
+    $('#certScore').textContent=pct+'%';
+    var chosen=[];
+    $('#pledgeList').querySelectorAll('.check.on').forEach(function(c){chosen.push(c.dataset.t)});
+    if(chosen.length===0) chosen.push('menyayangi diri sendiri');
+    $('#certIkrar').innerHTML='<b>Ikrar saya:</b> Saya berjanji akan peka & menyayangi diri saya dengan '+
+      chosen.join(', ')+'.';
+    $('#certBox').style.display='block';
+    goodSound();
+    var r=$('#makeCert').getBoundingClientRect();
+    sparkleBurst(r.left+r.width/2,r.top);
+    $('#certBox').scrollIntoView({behavior:'smooth'});
+  });
+
+  /* ---------- nav ---------- */
+  $('#goLearn').addEventListener('click',function(){ show('s-belajar'); });
+  $('#goMisi').addEventListener('click',function(){
+    idx=0; correctCount=0; buildDots(); updateMeter(); renderScenario(); show('s-misi');
+  });
+  $('#restartBtn').addEventListener('click',function(){
+    idx=0; correctCount=0; $('#nameInput').value=''; $('#certBox').style.display='none';
+    show('s-mula');
+  });
+
+  /* sound toggle */
+  $('#soundBtn').addEventListener('click',function(){
+    soundOn=!soundOn; this.textContent=soundOn?'🔊':'🔇';
+    if(soundOn) goodSound();
+  });
+
+  /* teacher modal */
+  $('#teacherBtn').addEventListener('click',function(){ $('#teacherModal').classList.add('open'); });
+  $('#closeTeacher').addEventListener('click',function(){ $('#teacherModal').classList.remove('open'); });
+  $('#teacherModal').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('open'); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('#teacherModal').classList.remove('open'); });
+
+})();
+</script>
+</body>
+</html>
